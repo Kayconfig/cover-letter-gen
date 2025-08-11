@@ -68,27 +68,6 @@ pnpm cover-letter-gen \
 
 ---
 
-## 📁 File Layout
-
-```text
-cover-letter-gen/
-├─ src/
-│  ├─ cli.ts              # Argument parsing + orchestrator
-│  ├─ agents/
-│  │  └─ coverLetter.ts   # LangChain agent that writes the letter
-│  ├─ utils/
-│  │  ├─ parser.ts        # Resume & JD parsing helpers
-│  │  └─ relevance.ts     # Calculates % relevance
-│  └─ index.ts            # Exports
-├─ dist/ (after build)    # Compiled JS
-├─ package.json
-├─ tsconfig.json
-├─ README.md
-└─ .env.example
-```
-
----
-
 ## 📚 Usage Guide
 
 ### 1. Argument Reference
