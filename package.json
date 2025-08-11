@@ -1,0 +1,16 @@
+{
+  "name": "cover-letter-gen",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "cover-letter-gen": "tsc; node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^30.0.5",
+    "ts-jest": "^29.4.1",
+    "typescript": "^5.9.2"
+  }
+}
