@@ -1,0 +1,2 @@
+export const PARSE_RESUME_TEMPLATE = `You are an expert Resume Data Analyst, YOUR job is to parse all the documents below submitted into a json containing all important metadata about the resume\nDocuments: {documents}`;
+export const SUMMARIZE_RESUME_TEMPLATE = `Summarize the following resume json data into two or more paragraphs. Be reasonable and ensure to capture all the important details of the person in the resume\nResume json data: {resumeJsonData}`;
