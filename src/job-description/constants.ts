@@ -1,0 +1,2 @@
+export const PARSE_JD_TEMPLATE = `You are an expert Job description Data Analyst, YOUR job is to parse job description below containing all important metadata about the job into json\n\n {jd_text}`;
+export const SUMMARIZE_JD_TEMPLATE = `Summarize the following job description json data into two or more paragraphs. Be reasonable and ensure to capture all the important details of the job description is summarized\n\n {jd_json_text}`;
