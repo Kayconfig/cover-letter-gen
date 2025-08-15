@@ -10,7 +10,7 @@ function createModel(verbose: boolean, model: string) {
   });
 }
 
-export function getOllamaModel(verbose: boolean = false) {
-  const ollamaModelName = getSecretOrThrow(ENV_KEYS.OLLAMA_MODEL);
-  return createModel(verbose, ollamaModelName);
+export function getOllamaModel(verbose: boolean = false, modelName?: string) {
+  modelName = modelName ?? getSecretOrThrow(ENV_KEYS.OLLAMA_MODEL);
+  return createModel(verbose, modelName);
 }

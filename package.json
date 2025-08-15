@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "test": "jest --forceExit",
     "dev": "ts-node src/index.ts",
     "cover-letter-gen": "tsc; node dist/index.js"
   },
@@ -10,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "jest": "^30.0.5",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
