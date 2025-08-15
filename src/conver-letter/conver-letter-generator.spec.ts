@@ -1,13 +1,11 @@
-import { ChatPromptTemplate } from '@langchain/core/prompts';
-import { COVER_LETTER_GENERATOR_PROMPT } from './constants';
 import { InvokableLLM } from '../interfaces/invokable-llm';
-import { AIMessageChunk, BaseMessage } from '@langchain/core/messages';
+import { BaseMessage } from '@langchain/core/messages';
 import { createAIMsgChunk } from '../utils/create-ai-message-chunk';
 import { GenerateCoverLetterState } from './interfaces/generate-cover-letter-state';
 import { generateCoverLetter } from './cover-letter-generator';
 
 describe('generateCoverLetter', () => {
-  it('should create correct chatPromptTemplate', async () => {
+  it('should return correct result', async () => {
     const mockParsedJobDescription = JSON.stringify({
       about: 'MOCK COMPANY LLC',
       description: 'this company is looking for backend dev',
@@ -15,13 +13,6 @@ describe('generateCoverLetter', () => {
     const mockParsedResume = JSON.stringify({
       name: 'John Doe',
       expertise: 'Microservices and Queues',
-    });
-
-    const expectedPromptMsg = await ChatPromptTemplate.fromTemplate(
-      COVER_LETTER_GENERATOR_PROMPT
-    ).invoke({
-      jobDescription: mockParsedJobDescription,
-      resume: mockParsedResume,
     });
 
     const expectedAIResponseContent = 'This is the cover-letter';

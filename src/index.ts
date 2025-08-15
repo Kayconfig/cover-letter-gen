@@ -8,7 +8,7 @@ import { jobDescriptionParser } from './job-description/jd-parser';
 import { jobFitAggregator } from './job-fit/job-fit-aggregator';
 import { writeFile } from 'node:fs/promises';
 import { shouldContinueAfterJobFitAnalysis } from './should-continue-after-job-fit';
-import { generateResumeImprovements } from './improvements/resume-improvements';
+import { resumeImprovementsGenerator } from './improvements/resume-improvements';
 import { outputParser } from './output-parser/output-parser';
 import { coverLetterGenerator } from './conver-letter/cover-letter-generator';
 import chalk from 'chalk';
@@ -30,7 +30,7 @@ async function startGraph({
     .addNode('resumeParser', resumeParser)
     .addNode('jdParser', jobDescriptionParser)
     .addNode('jobFitAggregator', jobFitAggregator)
-    .addNode('generateResumeImprovements', generateResumeImprovements)
+    .addNode('resumeImprovementsGenerator', resumeImprovementsGenerator)
     .addNode('coverLetterGenerator', coverLetterGenerator)
     .addNode('outputParser', outputParser)
     .addNode('resumeImprovementAndCoverLetterGenerator', () => ({}))
@@ -48,11 +48,11 @@ async function startGraph({
     )
     .addEdge(
       'resumeImprovementAndCoverLetterGenerator',
-      'generateResumeImprovements'
+      'resumeImprovementsGenerator'
     )
     .addEdge('resumeImprovementAndCoverLetterGenerator', 'coverLetterGenerator')
 
-    .addEdge('generateResumeImprovements', 'outputParser')
+    .addEdge('resumeImprovementsGenerator', 'outputParser')
     .addEdge('coverLetterGenerator', 'outputParser')
 
     .addEdge('outputParser', '__end__')
