@@ -4,8 +4,8 @@
 
 - Generate a tailored cover letter for any job description.
 - Evaluate your résumé against the job requirements.
-  - If your résumé is **≥ 50 %** relevant → it is improved with _suggestions_ for the next step.
-  - If it is **< 50 %** relevant → it explains why it is a poor fit and highlights the main gaps.
+  - If your résumé is **≥ 65 %** relevant → it is improved with _suggestions_ for the next step.
+  - If it is **< 65 %** relevant → it explains why it is a poor fit and highlights the main gaps.
 
 > **TL;DR**: Give it a résumé file and a job posting → you get a polished cover letter + feedback on your résumé in seconds.
 
