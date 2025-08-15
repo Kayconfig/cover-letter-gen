@@ -1,4 +1,4 @@
-import { config } from 'dotenv';
+import 'dotenv';
 import { program } from 'commander';
 import { cliSchema } from './schema';
 import { StateGraph } from '@langchain/langgraph';
@@ -6,20 +6,26 @@ import { AnnotationState, State } from './annotation-state';
 import { resumeParser } from './resume/resume-parser';
 import { jobDescriptionParser } from './job-description/jd-parser';
 import { jobFitAggregator } from './job-fit/job-fit-aggregator';
-import { writeFileSync } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
 import { shouldContinueAfterJobFitAnalysis } from './should-continue-after-job-fit';
 import { generateResumeImprovements } from './improvements/resume-improvements';
 import { outputParser } from './output-parser/output-parser';
 import { coverLetterGenerator } from './conver-letter/cover-letter-generator';
-config();
+import chalk from 'chalk';
 
 interface StartGraphInput {
   resumePath: string;
   jobPath: string;
   verbose: boolean;
+  outputFilePath: string;
 }
 
-async function startGraph({ resumePath, jobPath, verbose }: StartGraphInput) {
+async function startGraph({
+  resumePath,
+  jobPath,
+  verbose,
+  outputFilePath,
+}: StartGraphInput) {
   const chain = new StateGraph(AnnotationState)
     .addNode('resumeParser', resumeParser)
     .addNode('jdParser', jobDescriptionParser)
@@ -54,7 +60,7 @@ async function startGraph({ resumePath, jobPath, verbose }: StartGraphInput) {
     .compile();
 
   const res = await chain.invoke({ resumePath, jobPath, verbose });
-
+  await writeFile(outputFilePath, res.output, { encoding: 'utf-8' });
   console.log(res.output);
 }
 
@@ -62,13 +68,13 @@ async function startGraph({ resumePath, jobPath, verbose }: StartGraphInput) {
 program
   .version('1.0.0')
   .description(
-    'Give it a résumé file path and a job posting file path → you get a polished cover letter + feedback on your résumé in '
+    'Give it a Resume file path and a Job posting file path → you get a polished cover letter + feedback on your résumé in '
   )
   .option('--resume <resume-file-path>', 'filepath of the resume')
   .option('--job <job-file-path>', 'filepath of the job description')
   .option(
-    '--output <cover-letter-file-path>',
-    'filepath to save the cover letter'
+    '--output <output-file-path>',
+    'filepath to save the result i.e output is in markdown format '
   )
   .option('--verbose <verbose>', 'verbose mode for llm', 'false')
   .option('--temperature <temperature>', 'temperature of the llm', '0.7')
@@ -77,8 +83,8 @@ program
     const parsedOptionsResult = await cliSchema.safeParseAsync(options);
     if (!parsedOptionsResult.success) {
       const errMsg = parsedOptionsResult.error.issues[0]?.message;
-      console.error(`\n\!!! ERROR: ${errMsg} !!!\n\n`);
-      program.help();
+      console.log(chalk.red(`\nError occurred: ${errMsg} \n\n`));
+      program.help({ error: true });
       return;
     }
 
@@ -87,6 +93,7 @@ program
       resumePath: parsedOptions.resume,
       jobPath: parsedOptions.job,
       verbose: parsedOptions.verbose,
+      outputFilePath: parsedOptions.output,
     });
   });
 

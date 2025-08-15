@@ -2,19 +2,17 @@ import { State } from '../annotation-state';
 import { MIN_PERCENT_MATCH } from '../constants';
 
 export async function outputParser(state: State) {
-  const header = '-------------------- RESULT ---------------------';
+  const header = '# RESULTS';
+  // default output
+  let output = `${header}\n\n## Impressive points:\n${state.jobMatchReason}\n\n\n## Areas of improvment:\n${state.resumeImprovements}\n\n\n## Cover Letter:${state.coverLetter}`;
+
   if (state.jobMatchPercent < MIN_PERCENT_MATCH) {
-    const output = `
-    ${header}
-    Your resume is impressive in the following ways:
-    ${state.jobMatchReason}
-        
-    However your resume does not seem to be a good fit for the job for the following reasons
-    ${state.jobMisMatchReason}
+    output = `${header}\n\n## Impressive points:\n${state.jobMatchReason}\n\nHowever your resume is not a good fit for the job for the following reasons\n${state.jobMisMatchReason}
     `;
-    return { output };
   }
+
+  // output is presented as markdown file
   return {
-    output: `${header}\n\nImpressive points: ${state.jobMatchReason}\n\n\nAreas of improvment:\n${state.resumeImprovements}\n\nCover Letter:${state.coverLetter}`,
+    output,
   };
 }
