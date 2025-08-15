@@ -2,13 +2,15 @@ import { config } from 'dotenv';
 import { program } from 'commander';
 import { cliSchema } from './schema';
 import { StateGraph } from '@langchain/langgraph';
-import { AnnotationState } from './annotation-state';
+import { AnnotationState, State } from './annotation-state';
 import { resumeParser } from './resume/resume-parser';
-import { resumeSummarizer } from './resume/resume-summarizer';
 import { jobDescriptionParser } from './job-description/jd-parser';
-import { jobDescriptionSummarizer } from './job-description/jd-summarizer';
 import { jobFitAggregator } from './job-fit/job-fit-aggregator';
 import { writeFileSync } from 'node:fs';
+import { shouldContinueAfterJobFitAnalysis } from './should-continue-after-job-fit';
+import { generateResumeImprovements } from './improvements/resume-improvements';
+import { outputParser } from './output-parser/output-parser';
+import { coverLetterGenerator } from './conver-letter/cover-letter-generator';
 config();
 
 interface StartGraphInput {
@@ -20,20 +22,40 @@ interface StartGraphInput {
 async function startGraph({ resumePath, jobPath, verbose }: StartGraphInput) {
   const chain = new StateGraph(AnnotationState)
     .addNode('resumeParser', resumeParser)
-    .addNode('resumeSummarizer', resumeSummarizer)
     .addNode('jdParser', jobDescriptionParser)
-    .addNode('jdSummarizer', jobDescriptionSummarizer)
     .addNode('jobFitAggregator', jobFitAggregator)
+    .addNode('generateResumeImprovements', generateResumeImprovements)
+    .addNode('coverLetterGenerator', coverLetterGenerator)
+    .addNode('outputParser', outputParser)
+    .addNode('resumeImprovementAndCoverLetterGenerator', () => ({}))
     .addEdge('__start__', 'resumeParser')
     .addEdge('__start__', 'jdParser')
     .addEdge('resumeParser', 'jobFitAggregator')
     .addEdge('jdParser', 'jobFitAggregator')
-    .addEdge('jobFitAggregator', '__end__')
+    .addConditionalEdges(
+      'jobFitAggregator',
+      shouldContinueAfterJobFitAnalysis,
+      {
+        yes: 'resumeImprovementAndCoverLetterGenerator',
+        no: 'outputParser',
+      }
+    )
+    .addEdge(
+      'resumeImprovementAndCoverLetterGenerator',
+      'generateResumeImprovements'
+    )
+    .addEdge('resumeImprovementAndCoverLetterGenerator', 'coverLetterGenerator')
+
+    .addEdge('generateResumeImprovements', 'outputParser')
+    .addEdge('coverLetterGenerator', 'outputParser')
+
+    .addEdge('outputParser', '__end__')
 
     .compile();
 
   const res = await chain.invoke({ resumePath, jobPath, verbose });
-  console.log(res);
+
+  console.log(res.output);
 }
 
 // Set up the command-line interface

@@ -4,7 +4,7 @@ import { getOllamaModel } from '../models/ollama-model';
 import { RESUME_IMPROVEMENT_PROMPT } from './constants';
 import { createSystemMsg } from '../utils/create-system-message';
 
-export async function resumeImprovements(state: State) {
+export async function generateResumeImprovements(state: State) {
   const llm = getOllamaModel(state.verbose);
   const chatPromptTemplate = await ChatPromptTemplate.fromTemplate(
     RESUME_IMPROVEMENT_PROMPT

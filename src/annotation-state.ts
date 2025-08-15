@@ -13,6 +13,7 @@ export const AnnotationState = Annotation.Root({
   jobMisMatchReason: Annotation<string>,
   resumeImprovements: Annotation<string>,
   coverLetter: Annotation<string>,
+  output: Annotation<string>,
 });
 
 export type State = typeof AnnotationState.State;

@@ -1,7 +1,7 @@
 import { State } from '../annotation-state';
+import { MIN_PERCENT_MATCH } from '../constants';
 
 export function shouldContinueAfterJobFitAnalysis(state: State) {
-  const MIN_PERCENT_MATCH = 65;
   if (state.jobMatchPercent < MIN_PERCENT_MATCH) {
     return 'no';
   }
